@@ -1,0 +1,40 @@
+{
+  "name": "tnl-discord-bot",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsup src/index.ts --minify",
+    "build:dev-deploy-commands": "tsup src/dev-deploy-slash-commands.ts --minify",
+    "build:prod-deploy-commands": "tsup src/prod-deploy-slash-commands.ts --minify",
+    "dev-deploy-commands": "node dist/dev-deploy-slash-commands.js",
+    "prod-deploy-commands": "node dist/prod-deploy-slash-commands.js",
+    "prepare": "husky"
+  },
+  "author": "Mathis Engels",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "moment-timezone": "^0.5.46",
+    "selenium-webdriver": "^4.26.0",
+    "ts-dedent": "^2.2.0"
+  },
+  "devDependencies": {
+    "@codedependant/semantic-release-docker": "^5.0.3",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.1",
+    "@types/selenium-webdriver": "^4.1.27",
+    "eslint": "^9.15.0",
+    "husky": "^9.1.7",
+    "semantic-release": "^24.2.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
