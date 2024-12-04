@@ -62,7 +62,7 @@ async function execute(interaction: CommandInteraction) {
   }
 
   const selectedChannel = (await interaction.guild!.channels.fetch()).get(discordSaurollChannelId)!;
-  await setupConfirmation.editReply({ embeds: [getConfirmationEmbed(selectedChannel.id)], components: [] });
+  await setupConfirmation.editReply({ content: "", embeds: [getConfirmationEmbed(selectedChannel.id)], components: [] });
 
   return setupConfirmation;
 }
