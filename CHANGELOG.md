@@ -1,3 +1,12 @@
+## [1.0.1-beta.4](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.3...v1.0.1-beta.4) (2024-12-04)
+
+
+### Bug Fixes
+
+* remove buttons when setup is done ([2bc9218](https://github.com/MathisEngels/tnl-discord-bot/commit/2bc9218039ac7e5b57f0824523babac4316955a2))
+* remove text once sauroll setup is done ([88f3811](https://github.com/MathisEngels/tnl-discord-bot/commit/88f3811413c2a9fb02ad3893df9d053180b6ff74))
+* sort servers alphabetically ([1b37368](https://github.com/MathisEngels/tnl-discord-bot/commit/1b37368ba3d72f0136c00585f93628ab57633fce))
+
 ## [1.0.1-beta.3](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.2...v1.0.1-beta.3) (2024-12-04)
 
 
