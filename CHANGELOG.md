@@ -1,3 +1,10 @@
+## [1.0.1-beta.3](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.2...v1.0.1-beta.3) (2024-12-04)
+
+
+### Bug Fixes
+
+* modify the correct message during setup ([3da2374](https://github.com/MathisEngels/tnl-discord-bot/commit/3da23743688778fab2eb441423d1372e5506048b))
+
 ## [1.0.1-beta.2](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.1...v1.0.1-beta.2) (2024-12-04)
 
 
