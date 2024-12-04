@@ -98,11 +98,10 @@ export default class Sauroll {
       let message;
       if (!prevMessage) {
         message = await saurollChannel.send({ embeds: [SaurollRollEmbed(players, chestNumber, discordSaurollChannelId)], components: [saurollButtonRow] });
-
-        this.messages.set(saurollChannel.guild.id, message);
       } else {
         message = await prevMessage.edit({ embeds: [SaurollRollEmbed(players, chestNumber, discordSaurollChannelId)], components: [saurollButtonRow] });
       }
+      this.messages.set(saurollChannel.guild.id, message);
     }
   }
 
@@ -128,20 +127,22 @@ export default class Sauroll {
     const fields = [];
 
     if (players.length !== 0) {
-      players.sort((a, b) => b.roll - a.roll);
+      const chunkSize = 10;
 
-      for (let i = 0; i < players.length % 10; i++) {
+      for (let i = 0; i < Math.ceil(players.length / chunkSize); i++) {
         let str = "";
 
-        for (let j = 0; j < players.length; j++) {
-          const player = players[j];
+        for (let j = 0; j < chunkSize; j++) {
+          const index = i * chunkSize + j;
+          if (index >= players.length) break;
 
-          let tmpStr = `\`${j + 1}.\` <@${player.playerId}> with **${player.roll}**`;
+          const player = players[index];
+          let tmpStr = `\`${index + 1}.\` <@${player.playerId}> with **${player.roll}**`;
           if (player.pass) {
             tmpStr = `~~${tmpStr}~~`;
           }
 
-          str += tmpStr;
+          str += tmpStr + "\n";
         }
 
         fields.push({

@@ -4,7 +4,7 @@ class SaurollScheduler {
   private ping: () => void;
   private roll: (chestNumber: number) => void;
   private readonly interval = 60 * 150; // 150 minutes = 2.5 hours
-  private readonly referenceDate = moment("Mon, 25 Nov 2024 17:50:00 GMT");
+  private readonly referenceDate = moment("4 Dec 2024 15:20:00 GMT");
   private readonly pingPeriod = 8 * 60; // Can send a ping to up 8min before the night cycle
   private readonly rollDuration = 5 * 60; // 5min
   private readonly chestCount = 6;
@@ -63,7 +63,6 @@ class SaurollScheduler {
       const timeToFirstRoll = this.pingPeriod - elapsed;
 
       this.ping();
-      console.log("pingF done");
 
       setTimeout(() => {
         this.startRolls();
