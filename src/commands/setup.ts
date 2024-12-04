@@ -43,6 +43,7 @@ async function execute(interaction: CommandInteraction) {
 
     if (!servers.has(regionName)) {
       const serverList = await getServersByRegionId(regionConfirmation.values[0]);
+      serverList.sort((a, b) => a.name.localeCompare(b.name));
       servers.set(regionName, serverList);
     }
 
