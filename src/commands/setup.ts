@@ -164,7 +164,7 @@ async function execute(interaction: CommandInteraction) {
             await inviteUser(interaction.client, member.id, guild);
           }
         }
-        return saurollR.editReply({ content: "Guild setup completed! You can now use the bot's commands." });
+        return inviteConfirmation.editReply({ content: "Guild setup completed! You can now use the bot's commands." });
       } else {
         return saurollR.followUp({ content: "Guild setup completed! You can now use the bot's commands.", ephemeral: true });
       }
