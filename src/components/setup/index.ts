@@ -1,4 +1,15 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextInputBuilder, TextInputStyle, UserSelectMenuBuilder } from "discord.js";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ModalBuilder,
+  RoleSelectMenuBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  UserSelectMenuBuilder,
+} from "discord.js";
 import { Region, Server } from "../../types/API";
 
 const regionSelect = new StringSelectMenuBuilder().setCustomId("region").setPlaceholder("Select a region");
@@ -14,12 +25,13 @@ export function getRegionSelectRow(regions: Region[]) {
   return regionSelectActionRow;
 }
 
-const serverSelect = new StringSelectMenuBuilder().setCustomId("server").setPlaceholder("Select a server");
-
-export function getServerSelectRow(servers: Server[]) {
+export function getServerSelectRow(servers: Server[], id?: string | number) {
   const serversOptions = servers.map((server) => new StringSelectMenuOptionBuilder().setLabel(server.name).setValue(server.id.toString()));
-  serverSelect.setOptions(serversOptions);
-  
+  const serverSelect = new StringSelectMenuBuilder()
+    .setCustomId(`server${id ? `-${id}` : ""}`)
+    .setPlaceholder(`Select a server ${id ? ` | Page ${id}` : ""}`)
+    .setOptions(serversOptions);
+
   return new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(serverSelect);
 }
 

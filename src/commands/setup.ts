@@ -46,11 +46,16 @@ async function execute(interaction: CommandInteraction) {
       servers.set(regionName, serverList);
     }
 
-    const serverSelectRow = getServerSelectRow(servers.get(regionName)!);
+    let serverSelectRows;
+    if (servers.get(regionName)!.length > 25) {
+      serverSelectRows = [getServerSelectRow(servers.get(regionName)!.slice(0, 25), 1), getServerSelectRow(servers.get(regionName)!.slice(25), 2)];
+    } else {
+      serverSelectRows = [getServerSelectRow(servers.get(regionName)!)];
+    }
 
     const serverRes = await regionConfirmation.editReply({
       content: generateSummaryText("Please select the **server** of your guild!", regionName),
-      components: [serverSelectRow],
+      components: serverSelectRows,
     });
     const serverConfirmation = await serverRes.awaitMessageComponent({ componentType: ComponentType.StringSelect, time: 60000 });
 
