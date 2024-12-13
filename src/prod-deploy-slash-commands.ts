@@ -1,8 +1,10 @@
 import { REST, Routes } from "discord.js";
+import dotenv from "dotenv";
 import commands from "./commands";
-import { config } from "./config";
 
-const rest = new REST().setToken(config.DISCORD_TOKEN);
+dotenv.config();
+
+const rest = new REST().setToken(process.env.PROD_DISCORD_TOKEN!);
 
 const commandsData = Object.values(commands).map((command) => command.data.toJSON());
 
@@ -10,8 +12,7 @@ const commandsData = Object.values(commands).map((command) => command.data.toJSO
   try {
     console.log(`PROD - Started refreshing ${commandsData.length} application (/) commands.`);
 
-    const data = await rest.put(Routes.applicationCommands(config.DISCORD_CLIENT_ID), { body: commandsData });
-    await rest.put(Routes.applicationCommands(config.DISCORD_CLIENT_ID), { body: commandsData });
+    const data = await rest.put(Routes.applicationCommands(process.env.PROD_DISCORD_CLIENT_ID!), { body: commandsData });
 
     console.log(`PROD - Successfully reloaded ${(data as string[]).length} application (/) commands.`);
   } catch (error) {
