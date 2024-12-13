@@ -1,3 +1,15 @@
+# [1.1.0-beta.3](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2024-12-13)
+
+
+### Bug Fixes
+
+* change assets to public path, and fixed issue with path not working in prod ([de72bf5](https://github.com/MathisEngels/tnl-discord-bot/commit/de72bf5e92027ff3eddbc5eccac43dfc3671c282))
+
+
+### Reverts
+
+* remove workdir ([3aab7d5](https://github.com/MathisEngels/tnl-discord-bot/commit/3aab7d508727940453560dd4044991a9b812e0e9))
+
 # [1.1.0-beta.2](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2024-12-13)
 
 
