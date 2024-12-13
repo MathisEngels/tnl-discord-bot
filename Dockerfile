@@ -5,7 +5,7 @@ WORKDIR /app
 RUN npm install
 RUN npm run build
 
-ENV NODE_ENV=production
+ENV NODE_ENV production
 RUN wget https://gobinaries.com/tj/node-prune --output-document - | /bin/sh && node-prune
 
 
