@@ -1,9 +1,9 @@
 import invite from "./invite";
-import sauroll from "./sauroll";
+import pings from "./pings";
 import setup from "./setup";
 
 export default {
   setup,
-  sauroll,
   invite,
+  pings,
 };
