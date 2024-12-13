@@ -1,3 +1,16 @@
+# [1.1.0-beta.1](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.4...v1.1.0-beta.1) (2024-12-13)
+
+
+### Bug Fixes
+
+* remove duplicate rest request ([2e8874f](https://github.com/MathisEngels/tnl-discord-bot/commit/2e8874f7577f1ae181f6a825978a4c34e2bd072b))
+
+
+### Features
+
+* add `/pings <boss1> <boss2> <boss3>` command ([fb34705](https://github.com/MathisEngels/tnl-discord-bot/commit/fb347055c4c8b91c87be4cb0eb97fcaaa713a0b1))
+* under the /setup command, added two subcommands (all, and sauroll) ([18df962](https://github.com/MathisEngels/tnl-discord-bot/commit/18df96295e599f8b3730114705969126d90a21db))
+
 ## [1.0.1-beta.4](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.3...v1.0.1-beta.4) (2024-12-04)
 
 
