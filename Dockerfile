@@ -10,9 +10,8 @@ RUN wget https://gobinaries.com/tj/node-prune --output-document - | /bin/sh && n
 
 
 FROM --platform=arm64 arm64v8/node:current-alpine3.20 as runner
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/assets ./assets
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/node_modules app/node_modules
+COPY --from=builder /app/assets /assets
 
-CMD ["node", "./dist/index.js"]
+CMD ["node", "/app/dist/index.js"]
