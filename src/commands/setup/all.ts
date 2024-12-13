@@ -1,32 +1,19 @@
-import { CommandInteraction, ComponentType, InteractionContextType, PermissionFlagsBits, Role, SlashCommandBuilder, User } from "discord.js";
-import { getAllRegions, getServersByRegionId } from "../api/region";
-import { createGuild, getGuildByDiscordId, updateGuild } from "../api/guild";
-import sauroll from "./sauroll";
-import inviteUser from "../actions/inviteUser";
-import { confirmRow, getRegionSelectRow, getServerSelectRow, guildAdvisorRow, guildLeaderRow, guildSetupModal, membersRoleRow } from "../components/setup";
-import { Region, Server } from "../types/API";
-import { yesNoButtonRow } from "../components/common";
-
-const data = new SlashCommandBuilder()
-  .setName("setup")
-  .setDescription("Setup the bot for this server.")
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-  .setContexts(InteractionContextType.Guild);
+import { CommandInteraction, ComponentType, Role, User } from "discord.js";
+import { getAllRegions, getServersByRegionId } from "../../api/region";
+import { createGuild, getGuildByDiscordId, updateGuild } from "../../api/guild";
+import inviteUser from "../../actions/inviteUser";
+import { confirmRow, getRegionSelectRow, getServerSelectRow, guildAdvisorRow, guildLeaderRow, guildSetupModal, membersRoleRow } from "../../components/setup";
+import { Region, Server } from "../../types/API";
+import { yesNoButtonRow } from "../../components/common";
+import setupSauroll from "./sauroll";
 
 let regions: Region[] | undefined;
-export let servers = new Map<string, Server[]>();
+let servers = new Map<string, Server[]>();
 
-async function execute(interaction: CommandInteraction) {
+export default async function setupAll(interaction: CommandInteraction) {
   await interaction.deferReply({ ephemeral: true });
 
-  const guild = interaction.guild;
-  if (!guild) {
-    return interaction.editReply("This command can only be used in a server.");
-  }
-
-  if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
-    return interaction.editReply("You need to have the `Administrator` permission to run this command.");
-  }
+  const guild = interaction.guild!;
 
   if (!regions) {
     regions = await getAllRegions();
@@ -144,7 +131,7 @@ async function execute(interaction: CommandInteraction) {
 
     await confirm.editReply({ content: generateSummaryText(":white_check_mark: Guild setup saved!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole), components: [] });
 
-    const saurollR = await sauroll.execute(interaction);
+    const saurollR = await setupSauroll(interaction);
 
     if (saurollR) {
       if (!guildExists) {
@@ -200,8 +187,3 @@ function generateSummaryText(endText: string, regionName?: string, serverName?: 
 
   return text;
 }
-
-export default {
-  data,
-  execute,
-};

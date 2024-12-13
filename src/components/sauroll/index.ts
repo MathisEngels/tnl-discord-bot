@@ -19,5 +19,5 @@ export function getConfirmationEmbed(channelId: string) {
   3. 1-2 minutes before a chest spawns, Sauroll will send a message in <#${channelId}> to let you know who won.
   5. Optionally, you can pass the roll to someone else by reacting to the message.`;
 
-  return new EmbedBuilder().setTitle("Sauroll").setDescription(desc).addFields({ name: "How does it work?", value: fieldVal }).setFooter({ text: "Opt-out with `/sauroll`" });
+  return new EmbedBuilder().setTitle("Sauroll").setDescription(desc).addFields({ name: "How does it work?", value: fieldVal }).setFooter({ text: "Opt-out with `/setup sauroll`" });
 }

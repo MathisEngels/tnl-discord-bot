@@ -1,9 +1,9 @@
 import { EmbedBuilder, Message, VoiceBasedChannel } from "discord.js";
-import { getSaurollData } from "../api/sauroll";
 import SaurollPingEmbed from "../components/sauroll/ping";
 import ExtendedClient from "./ExtendedClient";
 import { saurollButtonRow, SaurollRollEmbed } from "../components/sauroll/roll";
 import { SaurollPlayer } from "../types/sauroll";
+import { getSaurollSubscribers } from "../api/sauroll";
 
 export default class Sauroll {
   client: ExtendedClient;
@@ -69,23 +69,23 @@ export default class Sauroll {
   }
 
   async ping() {
-    const saurollData = await getSaurollData();
+    const saurollSubscribers = await getSaurollSubscribers();
 
-    for (const { discordSaurollChannelId, discordSaurollRoleId } of saurollData) {
-      const saurollChannel = await this.client.channels.fetch(discordSaurollChannelId);
+    for (const { discordChannelId, discordRoleId } of saurollSubscribers) {
+      const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
 
-      const message = await saurollChannel.send({ embeds: [SaurollPingEmbed(discordSaurollChannelId, discordSaurollRoleId)] });
+      const message = await saurollChannel.send({ embeds: [SaurollPingEmbed(discordChannelId, discordRoleId)] });
 
-      this.messages.set(discordSaurollChannelId, message);
+      this.messages.set(discordChannelId, message);
     }
   }
 
   async postRoll(chestNumber: number) {
-    const saurollData = await getSaurollData();
+    const saurollSubscribers = await getSaurollSubscribers();
 
-    for (const { discordSaurollChannelId } of saurollData) {
-      const saurollChannel = await this.client.channels.fetch(discordSaurollChannelId);
+    for (const { discordChannelId } of saurollSubscribers) {
+      const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
 
       const players = this.getPlayers(saurollChannel.guild.id, saurollChannel)
@@ -97,9 +97,9 @@ export default class Sauroll {
       const prevMessage = this.messages.get(saurollChannel.guild.id);
       let message;
       if (!prevMessage) {
-        message = await saurollChannel.send({ embeds: [SaurollRollEmbed(players, chestNumber, discordSaurollChannelId)], components: [saurollButtonRow] });
+        message = await saurollChannel.send({ embeds: [SaurollRollEmbed(players, chestNumber, discordChannelId)], components: [saurollButtonRow] });
       } else {
-        message = await prevMessage.edit({ embeds: [SaurollRollEmbed(players, chestNumber, discordSaurollChannelId)], components: [saurollButtonRow] });
+        message = await prevMessage.edit({ embeds: [SaurollRollEmbed(players, chestNumber, discordChannelId)], components: [saurollButtonRow] });
       }
       this.messages.set(saurollChannel.guild.id, message);
     }

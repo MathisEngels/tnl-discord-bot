@@ -1,7 +1,3 @@
-type Nullable<T> = {
-  [P in keyof T]: T[P] | null;
-};
-
 export type GetAllRegionResponse = Region[];
 
 export type Region = {
@@ -47,10 +43,14 @@ export type Player = {
   serverId: number;
 };
 
-export type SaurollChannelAndRole = {
+export type SaurollSubscriber = {
   id: string;
-  discordSaurollChannelId: string;
-  discordSaurollRoleId?: string;
+  discordGuildId: string;
+  discordChannelId: string;
+  discordRoleId?: string;
 }
 
-export type GetSaurollDataResponse = SaurollChannelAndRole[];
+export type GetSaurollSubscription = SaurollSubscriber | null;
+export type GetSaurollSubscribersResponse = SaurollSubscriber[];
+export type CreateSaurollSubscriptionBody = Omit<SaurollSubscriber, "id">;
+export type UpdateSaurollSubscriptionBody = Partial<Omit<CreateSaurollSubscriptionBody, "discordGuildId">>;

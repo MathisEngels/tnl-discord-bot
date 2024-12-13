@@ -19,7 +19,8 @@ const listener: TEventListener<Events.GuildCreate> = {
     const message = dedent`
     # :wave: Thanks for inviting me to ${guild.name}!
     
-    To get started, use \`/setup\` on your server.`;
+    To get started, use \`/setup all\` on your server if you want the full wizard installation.
+    If you only want Sauroll (Saurodoma rolls) to be enabled, use \`/setup sauroll\`.`;
 
     sendTo.send({ content: message });
   },
