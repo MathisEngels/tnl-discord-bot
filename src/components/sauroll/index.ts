@@ -1,12 +1,14 @@
 import { ButtonBuilder, ButtonStyle, ActionRowBuilder, RoleSelectMenuBuilder, ChannelSelectMenuBuilder, ChannelType, EmbedBuilder } from "discord.js";
 import dedent from "ts-dedent";
 
-const roleSelect = new RoleSelectMenuBuilder().setCustomId("role").setPlaceholder("Select a role").setMinValues(0).setMaxValues(1);
-export const roleRow = new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(roleSelect);
-
 const channelSelect = new ChannelSelectMenuBuilder().setCustomId("channel").setPlaceholder("Select a channel").setChannelTypes(ChannelType.GuildVoice).setMinValues(0).setMaxValues(1);
 const createChannel = new ButtonBuilder().setCustomId("createChannel").setLabel("Create a channel").setStyle(ButtonStyle.Primary);
 export const channelRows = [new ActionRowBuilder<ChannelSelectMenuBuilder>().addComponents(channelSelect), new ActionRowBuilder<ButtonBuilder>().addComponents(createChannel)];
+
+const roleSelect = new RoleSelectMenuBuilder().setCustomId("roleSelect").setPlaceholder("Select a role").setMinValues(0).setMaxValues(1);
+const createRole = new ButtonBuilder().setCustomId("createRole").setLabel("Create a role").setStyle(ButtonStyle.Primary);
+const skipRole = new ButtonBuilder().setCustomId("skipRole").setLabel("Skip").setStyle(ButtonStyle.Danger);
+export const roleRows = [new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(roleSelect), new ActionRowBuilder<ButtonBuilder>().addComponents(createRole, skipRole)];
 
 export function getConfirmationEmbed(channelId: string) {
   const desc = dedent`

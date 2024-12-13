@@ -1,5 +1,5 @@
-import { ButtonInteraction, ChannelSelectMenuInteraction, ChannelType, CommandInteraction, ComponentType, InteractionContextType, SlashCommandBuilder } from "discord.js";
-import { channelRows, getConfirmationEmbed, roleRow } from "../../components/sauroll";
+import { ButtonInteraction, ChannelSelectMenuInteraction, ChannelType, CommandInteraction, ComponentType, RoleSelectMenuInteraction } from "discord.js";
+import { channelRows, getConfirmationEmbed, roleRows } from "../../components/sauroll";
 import { yesNoButtonRow } from "../../components/common";
 import { createSaurollSubscription, deleteSaurollSubscription, getSaurollSubscription, updateSaurollSubscription } from "../../api/sauroll";
 
@@ -41,11 +41,19 @@ export default async function setupSauroll(interaction: CommandInteraction) {
     discordChannelId = (channelConf as ChannelSelectMenuInteraction).values[0];
   }
 
-  const roleRes = await channelConf.editReply({ content: "Please select a role for Sauroll.", components: [roleRow] });
-  const roleConf = await roleRes.awaitMessageComponent({ componentType: ComponentType.RoleSelect, time: 60000 });
+  const roleRes = await channelConf.editReply({ content: "Please select a role for Sauroll.", components: roleRows });
+  const roleConf = (await roleRes.awaitMessageComponent({ time: 60000 })) as ButtonInteraction | RoleSelectMenuInteraction;
   await roleConf.deferUpdate();
 
-  const discordRoleId = roleConf.values[0];
+  let discordRoleId;
+  if (roleConf.customId === "createRole") {
+    await setupConfirmation.editReply({ content: "Creating a role...", components: [] });
+    const role = await interaction.guild!.roles.create({ name: "Sauroll" });
+
+    discordRoleId = role.id;
+  } else if (roleConf.customId === "roleSelect") {
+    discordRoleId = (roleConf as RoleSelectMenuInteraction).values[0];
+  }
 
   if (subscription) {
     const success = await updateSaurollSubscription(interaction.guildId!, { discordChannelId, discordRoleId });
