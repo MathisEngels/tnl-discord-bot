@@ -1,3 +1,11 @@
+# [1.1.0-beta.4](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.3...v1.1.0-beta.4) (2024-12-13)
+
+
+### Bug Fixes
+
+* fix public path for production ([ba2163e](https://github.com/MathisEngels/tnl-discord-bot/commit/ba2163e4c0e0e4f82c8661c0a8130196ef6f6424))
+* make sure node_env production is set ([647e0be](https://github.com/MathisEngels/tnl-discord-bot/commit/647e0be78664f57e5a03c8740e9ac0a5fda16e20))
+
 # [1.1.0-beta.3](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.2...v1.1.0-beta.3) (2024-12-13)
 
 
