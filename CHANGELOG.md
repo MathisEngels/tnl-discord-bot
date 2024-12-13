@@ -1,3 +1,11 @@
+# [1.1.0-beta.2](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.1...v1.1.0-beta.2) (2024-12-13)
+
+
+### Bug Fixes
+
+* add workdir in dockerfile to fix assets path ([8b2d372](https://github.com/MathisEngels/tnl-discord-bot/commit/8b2d372b52af2f220a758b1e11949f571008584d))
+* update and fixed bug in prod command registration ([cd20b8b](https://github.com/MathisEngels/tnl-discord-bot/commit/cd20b8bd78e1186ab290efbe03538aac60b561b3))
+
 # [1.1.0-beta.1](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.0.1-beta.4...v1.1.0-beta.1) (2024-12-13)
 
 
