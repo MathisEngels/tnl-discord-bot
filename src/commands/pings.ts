@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, CommandInteraction, InteractionContextType
 import { readFile } from "fs/promises";
 import path from "path";
 import Sharp from "sharp";
+import { getPublicPath } from "../utils";
 
 const bosses = [
   { name: "Adentus", value: "adentus" },
@@ -149,11 +150,11 @@ async function execute(interaction: CommandInteraction) {
 
   const boss1Pings = [];
   for (const ping of pingsInfo[boss1]) {
-    boss1Pings.push({ input: await readFile(path.join(process.cwd(), `./assets/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
+    boss1Pings.push({ input: await readFile(path.join(getPublicPath(), `/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
     currentPing++;
   }
 
-  const boss1Zone = await readFile(path.join(process.cwd(), `./assets/bossZones/${boss1}.png`));
+  const boss1Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss1}.png`));
   const boss1Image = await Sharp(boss1Zone)
     .composite(boss1Pings)
     .toBuffer();
@@ -168,11 +169,11 @@ async function execute(interaction: CommandInteraction) {
         break;
       };
 
-      boss2Pings.push({ input: await readFile(path.join(process.cwd(), `./assets/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
+      boss2Pings.push({ input: await readFile(path.join(getPublicPath(), `/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
       currentPing++;
     }
 
-    const boss2Zone = await readFile(path.join(process.cwd(), `./assets/bossZones/${boss2}.png`));
+    const boss2Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss2}.png`));
     const boss2Image = await Sharp(boss2Zone)
       .composite(boss2Pings)
       .toBuffer();
@@ -187,11 +188,11 @@ async function execute(interaction: CommandInteraction) {
         maxPingsExceeded = true;
         break;
       };
-      boss3Pings.push({ input: await readFile(path.join(process.cwd(), `./assets/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
+      boss3Pings.push({ input: await readFile(path.join(getPublicPath(), `/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
       currentPing++;
     }
 
-    const boss3Zone = await readFile(path.join(process.cwd(), `./assets/bossZones/${boss3}.png`));
+    const boss3Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss3}.png`));
     const boss3Image = await Sharp(boss3Zone)
       .composite(boss3Pings)
       .toBuffer();

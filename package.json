@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
-    "build": "tsup src/index.ts --minify",
+    "build": "tsup src/index.ts --minify --publicDir",
     "build:dev-deploy-commands": "tsup src/dev-deploy-slash-commands.ts --minify",
     "build:prod-deploy-commands": "tsup src/prod-deploy-slash-commands.ts --minify",
     "dev-deploy-commands": "node dist/dev-deploy-slash-commands.js",
