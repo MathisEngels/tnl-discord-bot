@@ -71,7 +71,11 @@ export default class Sauroll {
   async ping() {
     const saurollSubscribers = await getSaurollSubscribers();
 
-    for (const { discordChannelId, discordRoleId } of saurollSubscribers) {
+    for (const { discordGuildId, discordChannelId, discordRoleId } of saurollSubscribers) {
+      const guild = await this.client.guilds.fetch(discordGuildId);
+      const me = await guild.members.fetchMe();
+      if (!me.permissionsIn(discordChannelId).has("SendMessages")) break;
+
       const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
 
@@ -84,7 +88,11 @@ export default class Sauroll {
   async postRoll(chestNumber: number) {
     const saurollSubscribers = await getSaurollSubscribers();
 
-    for (const { discordChannelId } of saurollSubscribers) {
+    for (const { discordGuildId, discordChannelId } of saurollSubscribers) {
+      const guild = await this.client.guilds.fetch(discordGuildId);
+      const me = await guild.members.fetchMe();
+      if (!me.permissionsIn(discordChannelId).has("SendMessages")) break;
+
       const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
 

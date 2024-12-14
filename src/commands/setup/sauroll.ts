@@ -6,6 +6,8 @@ import { createSaurollSubscription, deleteSaurollSubscription, getSaurollSubscri
 export default async function setupSauroll(interaction: CommandInteraction) {
   if (!interaction.deferred) await interaction.deferReply({ ephemeral: true });
 
+  let permissionWarning = false;
+
   const subscription = await getSaurollSubscription(interaction.guildId!);
 
   const setupRes = await interaction.followUp({ content: "Do you want to use Sauroll? (Saurodoma rolls)", components: [yesNoButtonRow], ephemeral: true });
@@ -39,6 +41,9 @@ export default async function setupSauroll(interaction: CommandInteraction) {
     discordChannelId = channel.id;
   } else {
     discordChannelId = (channelConf as ChannelSelectMenuInteraction).values[0];
+
+    const me = await interaction.guild!.members.fetchMe();
+    permissionWarning = me.permissionsIn(discordChannelId).has("SendMessages");
   }
 
   const roleRes = await channelConf.editReply({ content: "Please select a role for Sauroll.", components: roleRows });
@@ -70,7 +75,9 @@ export default async function setupSauroll(interaction: CommandInteraction) {
   }
 
   const selectedChannel = (await interaction.guild!.channels.fetch()).get(discordChannelId)!;
-  await setupConfirmation.editReply({ content: "", embeds: [getConfirmationEmbed(selectedChannel.id)], components: [] });
+  const message = permissionWarning ? `⚠️ I don't have **ACCESS** to ${selectedChannel} or **PERMISSIONS** to send messages or view ${selectedChannel}. Manually fix it, or grant me Administrator rights. ⚠️` : "";
+
+  await setupConfirmation.editReply({ content: message, embeds: [getConfirmationEmbed(selectedChannel.id)], components: [] });
 
   return setupConfirmation;
 }
