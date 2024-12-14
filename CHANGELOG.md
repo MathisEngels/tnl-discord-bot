@@ -1,3 +1,10 @@
+# [1.1.0-beta.6](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.5...v1.1.0-beta.6) (2024-12-14)
+
+
+### Bug Fixes
+
+* update permissions checking logic ([8fd1464](https://github.com/MathisEngels/tnl-discord-bot/commit/8fd14641015bb94a9929ad8ca58800a7a7f7e017))
+
 # [1.1.0-beta.5](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2024-12-14)
 
 
