@@ -1,3 +1,11 @@
+# [1.1.0-beta.5](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2024-12-14)
+
+
+### Features
+
+* add a button to create or skip role selection ([11c1b60](https://github.com/MathisEngels/tnl-discord-bot/commit/11c1b6096ee8abb5e2719b5cff50258014dca762))
+* warn user and prevent sending message if bot doesnt have access/permissions ([2c62d0a](https://github.com/MathisEngels/tnl-discord-bot/commit/2c62d0ab4d6d2d2c53cd0cd9f263ad697caa1177))
+
 # [1.1.0-beta.4](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.3...v1.1.0-beta.4) (2024-12-13)
 
 
