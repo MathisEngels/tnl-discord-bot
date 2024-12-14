@@ -43,7 +43,7 @@ export default async function setupSauroll(interaction: CommandInteraction) {
     discordChannelId = (channelConf as ChannelSelectMenuInteraction).values[0];
 
     const me = await interaction.guild!.members.fetchMe();
-    permissionWarning = me.permissionsIn(discordChannelId).has("SendMessages");
+    permissionWarning = !me.permissionsIn(discordChannelId).has("SendMessages") || !me.permissionsIn(discordChannelId).has("ViewChannel");
   }
 
   const roleRes = await channelConf.editReply({ content: "Please select a role for Sauroll.", components: roleRows });

@@ -70,15 +70,14 @@ export default class Sauroll {
 
   async ping() {
     const saurollSubscribers = await getSaurollSubscribers();
-    
 
     for (const { discordGuildId, discordChannelId, discordRoleId } of saurollSubscribers) {
-      const guild = await this.client.guilds.fetch(discordGuildId);
-      const me = await guild.members.fetchMe();
-      if (!me.permissionsIn(discordChannelId).has("SendMessages")) break;
-
       const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
+
+      const guild = await this.client.guilds.fetch(discordGuildId);
+      const me = await guild.members.fetchMe();
+      if (!me.permissionsIn(discordChannelId).has("SendMessages") || !me.permissionsIn(discordChannelId).has("ViewChannel")) break;
 
       const message = await saurollChannel.send({ embeds: [SaurollPingEmbed(discordChannelId, discordRoleId)] });
 
@@ -90,12 +89,12 @@ export default class Sauroll {
     const saurollSubscribers = await getSaurollSubscribers();
 
     for (const { discordGuildId, discordChannelId } of saurollSubscribers) {
-      const guild = await this.client.guilds.fetch(discordGuildId);
-      const me = await guild.members.fetchMe();
-      if (!me.permissionsIn(discordChannelId).has("SendMessages")) break;
-
       const saurollChannel = await this.client.channels.fetch(discordChannelId);
       if (!saurollChannel || !saurollChannel.isVoiceBased()) break;
+
+      const guild = await this.client.guilds.fetch(discordGuildId);
+      const me = await guild.members.fetchMe();
+      if (!me.permissionsIn(discordChannelId).has("SendMessages") || !me.permissionsIn(discordChannelId).has("ViewChannel")) break;
 
       const players = this.getPlayers(saurollChannel.guild.id, saurollChannel)
         .map((playerId) => ({ playerId, roll: 1 + Math.floor(Math.random() * 100) }))
