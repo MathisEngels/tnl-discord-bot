@@ -4,6 +4,20 @@
 ### Bug Fixes
 
 * force release ([8018c21](https://github.com/MathisEngels/tnl-discord-bot/commit/8018c21c83e3c5e328ce3740176d5c39fc8572cc))
+* set Node_env right before build, not before install ([9f94d1a](https://github.com/MathisEngels/tnl-discord-bot/commit/9f94d1ae2c496dcbb91cf3ff979a17fd5bc98143))
+
+
+### Features
+
+* add a button to create or skip role selection ([11c1b60](https://github.com/MathisEngels/tnl-discord-bot/commit/11c1b6096ee8abb5e2719b5cff50258014dca762))
+* warn user and prevent sending message if bot doesnt have access/permissions ([2c62d0a](https://github.com/MathisEngels/tnl-discord-bot/commit/2c62d0ab4d6d2d2c53cd0cd9f263ad697caa1177))
+
+# [1.1.0-beta.5](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.4...v1.1.0-beta.5) (2024-12-14)
+
+
+### Bug Fixes
+
+* force release ([8018c21](https://github.com/MathisEngels/tnl-discord-bot/commit/8018c21c83e3c5e328ce3740176d5c39fc8572cc))
 
 
 ### Features
