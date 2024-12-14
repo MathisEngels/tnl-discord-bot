@@ -70,6 +70,7 @@ export default class Sauroll {
 
   async ping() {
     const saurollSubscribers = await getSaurollSubscribers();
+    
 
     for (const { discordGuildId, discordChannelId, discordRoleId } of saurollSubscribers) {
       const guild = await this.client.guilds.fetch(discordGuildId);
