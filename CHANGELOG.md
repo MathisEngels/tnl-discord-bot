@@ -1,3 +1,10 @@
+# [1.1.0-beta.7](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.6...v1.1.0-beta.7) (2024-12-14)
+
+
+### Bug Fixes
+
+* use discordGuildId as key ([5cf0706](https://github.com/MathisEngels/tnl-discord-bot/commit/5cf070689b98a80462b7e6371acbcc58df0da2a7))
+
 # [1.1.0-beta.6](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.5...v1.1.0-beta.6) (2024-12-14)
 
 
