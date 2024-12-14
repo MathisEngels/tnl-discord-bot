@@ -81,7 +81,7 @@ export default class Sauroll {
 
       const message = await saurollChannel.send({ embeds: [SaurollPingEmbed(discordChannelId, discordRoleId)] });
 
-      this.messages.set(discordChannelId, message);
+      this.messages.set(discordGuildId, message);
     }
   }
 
@@ -96,20 +96,20 @@ export default class Sauroll {
       const me = await guild.members.fetchMe();
       if (!me.permissionsIn(discordChannelId).has("SendMessages") || !me.permissionsIn(discordChannelId).has("ViewChannel")) break;
 
-      const players = this.getPlayers(saurollChannel.guild.id, saurollChannel)
+      const players = this.getPlayers(discordGuildId, saurollChannel)
         .map((playerId) => ({ playerId, roll: 1 + Math.floor(Math.random() * 100) }))
         .sort((a, b) => b.roll - a.roll);
 
-      this.players.set(saurollChannel.guild.id, players);
+      this.players.set(discordGuildId, players);
 
-      const prevMessage = this.messages.get(saurollChannel.guild.id);
+      const prevMessage = this.messages.get(discordGuildId);
       let message;
       if (!prevMessage) {
         message = await saurollChannel.send({ embeds: [SaurollRollEmbed(players, chestNumber, discordChannelId)], components: [saurollButtonRow] });
       } else {
         message = await prevMessage.edit({ embeds: [SaurollRollEmbed(players, chestNumber, discordChannelId)], components: [saurollButtonRow] });
       }
-      this.messages.set(saurollChannel.guild.id, message);
+      this.messages.set(discordGuildId, message);
     }
   }
 
