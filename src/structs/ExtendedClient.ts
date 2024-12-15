@@ -45,8 +45,8 @@ export default class ExtendedClient extends Client {
       this.sauroll.postRoll(chestNumber);
 
       if (chestNumber === 6) {
-        setTimeout(() => {
-          this.sauroll.deleteMessages();
+        setTimeout(async () => {
+          await this.sauroll.deleteMessages();
           this.sauroll.reset();
         }, 5 * 60 * 1000);
       }
