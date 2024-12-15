@@ -1,3 +1,10 @@
+# [1.1.0-beta.8](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.7...v1.1.0-beta.8) (2024-12-15)
+
+
+### Bug Fixes
+
+* ensure sauroll message gets deleted ([9c2c340](https://github.com/MathisEngels/tnl-discord-bot/commit/9c2c340c3df9dddfc3789beec49ff0bb109201b2))
+
 # [1.1.0-beta.7](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.6...v1.1.0-beta.7) (2024-12-14)
 
 
