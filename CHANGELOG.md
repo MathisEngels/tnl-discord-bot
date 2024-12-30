@@ -1,3 +1,10 @@
+# [1.1.0-beta.9](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.8...v1.1.0-beta.9) (2024-12-30)
+
+
+### Features
+
+* update pings and boss zones ([31bed1d](https://github.com/MathisEngels/tnl-discord-bot/commit/31bed1ddb7db83ff55159c4a84fa8ce64d02c8b2))
+
 # [1.1.0-beta.8](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.7...v1.1.0-beta.8) (2024-12-15)
 
 
