@@ -1,4 +1,4 @@
-import { CreateSaurollSubscriptionBody, GetSaurollSubscribersResponse, GetSaurollSubscription as GetSaurollSubscriptionResponse, UpdateSaurollSubscriptionBody } from "../types/API";
+import { CreateSaurollSubscriptionBody, GetSaurollSubscribersResponse, GetSaurollSubscriptionByGuildIdResponse, UpdateSaurollSubscriptionBody } from "../types/API";
 
 export async function getSaurollSubscribers(): Promise<GetSaurollSubscribersResponse> {
   try {
@@ -12,7 +12,7 @@ export async function getSaurollSubscribers(): Promise<GetSaurollSubscribersResp
   }
 }
 
-export async function getSaurollSubscription(discordGuildId: string): Promise<GetSaurollSubscriptionResponse> {
+export async function getSaurollSubscriptionsByDiscordGuildId(discordGuildId: string): Promise<GetSaurollSubscriptionByGuildIdResponse> {
   try {
     const response = await fetch(`${process.env.API_URL}/sauroll/${discordGuildId}`);
     const data = await response.json();
@@ -20,7 +20,7 @@ export async function getSaurollSubscription(discordGuildId: string): Promise<Ge
     return data;
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 }
 
@@ -41,9 +41,9 @@ export async function createSaurollSubscription(data: CreateSaurollSubscriptionB
   }
 }
 
-export async function updateSaurollSubscription(discordGuildId: string, data: UpdateSaurollSubscriptionBody): Promise<boolean> {
+export async function updateSaurollSubscription(discordVoiceChannelId: string, data: UpdateSaurollSubscriptionBody): Promise<boolean> {
   try {
-    const response = await fetch(`${process.env.API_URL}/sauroll/${discordGuildId}`, {
+    const response = await fetch(`${process.env.API_URL}/sauroll/${discordVoiceChannelId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -58,9 +58,9 @@ export async function updateSaurollSubscription(discordGuildId: string, data: Up
   }
 }
 
-export async function deleteSaurollSubscription(discordGuildId: string): Promise<boolean> {
+export async function deleteSaurollSubscription(discordVoiceChannelId: string): Promise<boolean> {
   try {
-    const response = await fetch(`${process.env.API_URL}/sauroll/${discordGuildId}`, {
+    const response = await fetch(`${process.env.API_URL}/sauroll/${discordVoiceChannelId}`, {
       method: "DELETE",
     });
 

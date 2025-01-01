@@ -1,11 +1,8 @@
 import { CommandInteraction, ComponentType, Role, User } from "discord.js";
 import { getAllRegions, getServersByRegionId } from "../../api/region";
 import { createGuild, getGuildByDiscordId, updateGuild } from "../../api/guild";
-import inviteUser from "../../actions/inviteUser";
 import { confirmRow, getRegionSelectRow, getServerSelectRow, guildAdvisorRow, guildLeaderRow, guildSetupModal, membersRoleRow } from "../../components/setup";
 import { Region, Server } from "../../types/API";
-import { yesNoButtonRow } from "../../components/common";
-import setupSauroll from "./sauroll";
 
 let regions: Region[] | undefined;
 let servers = new Map<string, Server[]>();
@@ -130,33 +127,6 @@ export default async function setupAll(interaction: CommandInteraction) {
     }
 
     await confirm.editReply({ content: generateSummaryText(":white_check_mark: Guild setup saved!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole), components: [] });
-
-    const saurollR = await setupSauroll(interaction);
-
-    if (saurollR) {
-      if (!guildExists) {
-        const sendInvR = await saurollR.followUp({
-          content: "Would you like to invite the guild members now? *(Guild lead, advisors, and everyone with the Members role)*",
-          components: [yesNoButtonRow],
-          ephemeral: true,
-        });
-        const inviteConfirmation = await sendInvR.awaitMessageComponent({ componentType: ComponentType.Button, time: 60000 });
-        await inviteConfirmation.deferUpdate();
-
-        if (inviteConfirmation.customId === "yes") {
-          const members = membersRole.members;
-
-          const guildMembers = [...members.values(), guildLeader, ...guildAdvisors];
-
-          for (const member of guildMembers) {
-            await inviteUser(interaction.client, member.id, guild);
-          }
-        }
-        return inviteConfirmation.editReply({ content: "Guild setup completed! You can now use the bot's commands.", components: [] });
-      } else {
-        return saurollR.followUp({ content: "Guild setup completed! You can now use the bot's commands.", ephemeral: true });
-      }
-    }
   } catch (error) {
     console.log(error);
   }

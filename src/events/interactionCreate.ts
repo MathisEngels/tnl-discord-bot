@@ -52,24 +52,22 @@ const listener: TEventListener<Events.InteractionCreate> = {
           await inviteRefuse(interaction);
         }
       } else if (interaction.customId.startsWith("sauroll")) {
-        const [_, func] = interaction.customId.split("-");
+        const [_, func, voiceChannelId] = interaction.customId.split("-");
 
         await interaction.deferReply({ ephemeral: true });
 
         if (func === "pass") {
-          (interaction.client as ExtendedClient).sauroll.pass(interaction.guildId!, interaction.user.id);
+          (interaction.client as ExtendedClient).sauroll.pass(voiceChannelId, interaction.user.id);
 
           await interaction.editReply({ content: "You have passed the roll." });
         } else if (func === "optIn") {
+          (interaction.client as ExtendedClient).sauroll.optIn(voiceChannelId, interaction.user.id);
 
-          (interaction.client as ExtendedClient).sauroll.optIn(interaction.guildId!, interaction.user.id);
-
-          await interaction.editReply({ content: "You have opted in the roll." });
+          await interaction.editReply({ content: "You have opted in the rolls." });
         } else if (func === "optOut") {
+          (interaction.client as ExtendedClient).sauroll.optOut(voiceChannelId, interaction.user.id);
 
-          (interaction.client as ExtendedClient).sauroll.optOut(interaction.guildId!, interaction.user.id);
-
-          await interaction.editReply({ content: "You have opted out the roll." });
+          await interaction.editReply({ content: "You have opted out the rolls." });
         } else {
           console.error(`No function matching ${func} was found.`);
         }

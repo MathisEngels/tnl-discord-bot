@@ -46,11 +46,12 @@ export type Player = {
 export type SaurollSubscriber = {
   id: string;
   discordGuildId: string;
-  discordChannelId: string;
+  discordVoiceChannelId: string;
+  discordTextChannelId: string;
   discordRoleId?: string;
-}
+};
 
-export type GetSaurollSubscription = SaurollSubscriber | null;
+export type GetSaurollSubscriptionByGuildIdResponse = SaurollSubscriber[];
 export type GetSaurollSubscribersResponse = SaurollSubscriber[];
 export type CreateSaurollSubscriptionBody = Omit<SaurollSubscriber, "id">;
-export type UpdateSaurollSubscriptionBody = Partial<Omit<CreateSaurollSubscriptionBody, "discordGuildId">>;
+export type UpdateSaurollSubscriptionBody = Partial<Omit<CreateSaurollSubscriptionBody, "discordGuildId" | "discordVoiceChannelId">>;
