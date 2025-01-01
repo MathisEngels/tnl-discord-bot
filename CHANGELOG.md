@@ -1,3 +1,15 @@
+# [1.1.0-beta.10](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.9...v1.1.0-beta.10) (2025-01-01)
+
+
+### Bug Fixes
+
+* 'tchernobog' to 'chernobog' typo ([b42f2fa](https://github.com/MathisEngels/tnl-discord-bot/commit/b42f2fa9d0c759cb5e926a92f305c777674acbb6))
+
+
+### Features
+
+* handle multiple instances of sauroll per discord server ([5ade2fc](https://github.com/MathisEngels/tnl-discord-bot/commit/5ade2fcc2519a5171c0df596c01fc08c24524d3d))
+
 # [1.1.0-beta.9](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.8...v1.1.0-beta.9) (2024-12-30)
 
 
