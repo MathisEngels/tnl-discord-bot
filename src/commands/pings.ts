@@ -8,6 +8,7 @@ const bosses = [
   { name: "Adentus", value: "adentus" },
   { name: "Ahzreil", value: "ahzreil" },
   { name: "Aridus", value: "aridus" },
+  { name: "Chernobog", value: "chernobog" },
   { name: "Cornelius", value: "cornelius" },
   { name: "Excavator", value: "excavator" },
   { name: "Grand Aelon", value: "grandaelon" },
@@ -18,7 +19,6 @@ const bosses = [
   { name: "Morokai", value: "morokai" },
   { name: "Nirma", value: "nirma" },
   { name: "Talus", value: "talus" },
-  { name: "Tchernobog", value: "tchernobog" },
   // Archbosses
   { name: "Tevent", value: "tevent" },
   { name: "Bellandir", value: "bellandir" },
@@ -70,6 +70,17 @@ const pingsInfo: PingsInfo = {
     { left: 311, top: 385 },
     { left: 301, top: 231 },
     { left: 433, top: 203 },
+  ],
+  chernobog: [
+    { left: 411, top: 558 },
+    { left: 367, top: 423 },
+    { left: 287, top: 310 },
+    { left: 365, top: 161 },
+    { left: 421, top: 103 },
+    { left: 550, top: 97 },
+    { left: 611, top: 219 },
+    { left: 543, top: 381 },
+    { left: 464, top: 330 },
   ],
   cornelius: [
     { left: 203, top: 124 },
@@ -154,17 +165,6 @@ const pingsInfo: PingsInfo = {
     { left: 306, top: 334 },
     { left: 390, top: 285 },
   ],
-  tchernobog: [
-    { left: 411, top: 558 },
-    { left: 367, top: 423 },
-    { left: 287, top: 310 },
-    { left: 365, top: 161 },
-    { left: 421, top: 103 },
-    { left: 550, top: 97 },
-    { left: 611, top: 219 },
-    { left: 543, top: 381 },
-    { left: 464, top: 330 },
-  ],
   tevent: [
     { left: 197, top: 401 },
     { left: 400, top: 515 },
@@ -180,7 +180,7 @@ const pingsInfo: PingsInfo = {
 
 const data = new SlashCommandBuilder()
   .setName("pings")
-  .setDescription("Get in-game PVP pings for the bosses.")
+  .setDescription("Get in-game PvP pings for the bosses.")
   .setContexts(InteractionContextType.Guild)
   .addStringOption((option) => option.setName("boss1").setDescription("The 1st boss you want to get pings for.").setRequired(true).addChoices(bosses))
   .addStringOption((option) => option.setName("boss2").setDescription("The 2nd boss you want to get pings for.").setRequired(false).addChoices(bosses))
