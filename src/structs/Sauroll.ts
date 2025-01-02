@@ -4,7 +4,9 @@ import ExtendedClient from "./ExtendedClient";
 import { SaurollButtons, SaurollRollEmbed, SaurollRollFields } from "../components/sauroll/roll";
 import { SaurollPlayer } from "../types/sauroll";
 import { deleteSaurollSubscription, getSaurollSubscribers } from "../api/sauroll";
-import logger from "../logger";
+import mainLogger from "../logger";
+
+const logger = mainLogger.child({ scope: "Sauroll" });
 
 export default class Sauroll {
   client: ExtendedClient;
@@ -17,10 +19,12 @@ export default class Sauroll {
 
   constructor(client: ExtendedClient) {
     this.client = client;
-    logger.debug("Sauroll initialized.");
+    logger.debug("Initialized.");
   }
 
   getPlayers(channel: VoiceBasedChannel) {
+    logger.debug(`Getting players for ${channel.id}`);
+
     const playerInChannel = channel.members;
 
     const optIn = this.optInPlayers.get(channel.id) || [];
@@ -32,11 +36,15 @@ export default class Sauroll {
   }
 
   pass(voiceChannelId: string, playerId: string) {
+    logger.debug(`Player ${playerId} passed for ${voiceChannelId}`);
+
     this.passPlayers.set(voiceChannelId, [...(this.passPlayers.get(voiceChannelId) || []), playerId]);
     this.updateRoll(voiceChannelId);
   }
 
   optIn(voiceChannelId: string, playerId: string) {
+    logger.debug(`Player ${playerId} opted in for ${voiceChannelId}`);
+
     if (this.optOutPlayers.get(voiceChannelId)?.includes(playerId)) {
       this.optOutPlayers.set(
         voiceChannelId,
@@ -48,6 +56,8 @@ export default class Sauroll {
   }
 
   optOut(voiceChannelId: string, playerId: string) {
+    logger.debug(`Opting out ${playerId} from ${voiceChannelId}`);
+
     if (this.optInPlayers.get(voiceChannelId)?.includes(playerId)) {
       this.optInPlayers.set(
         voiceChannelId,
@@ -61,6 +71,8 @@ export default class Sauroll {
 
   resetPassPlayers() {
     this.passPlayers.clear();
+
+    logger.debug("Pass players reset.");
   }
 
   reset() {
@@ -68,9 +80,13 @@ export default class Sauroll {
     this.optOutPlayers.clear();
     this.passPlayers.clear();
     this.messages.clear();
+
+    logger.debug("Sauroll reset.");
   }
 
   async ping() {
+    logger.debug("Pinging sauroll subscribers.");
+
     const saurollSubscribers = await getSaurollSubscribers();
 
     for (const { discordGuildId, discordVoiceChannelId, discordTextChannelId, discordRoleId } of saurollSubscribers) {
@@ -88,6 +104,8 @@ export default class Sauroll {
   }
 
   async postRoll(chestNumber: number) {
+    logger.debug("Posting rolls.");
+
     const saurollSubscribers = await getSaurollSubscribers();
 
     for (const { discordGuildId, discordVoiceChannelId, discordTextChannelId } of saurollSubscribers) {
@@ -119,17 +137,29 @@ export default class Sauroll {
         const err = e as DiscordAPIError;
         switch (err.code) {
           case 10004: // Unknown Guild
-            console.error(`Unknown Guild (${discordGuildId}), deleting subscription`);
+            logger.error(`Unknown Guild (${discordGuildId}), deleting subscription`);
+
             const res = await deleteSaurollSubscription(discordGuildId);
-            console.error(`${res ? "Successfully" : "Failed to"} delete the subscription for ${discordGuildId}`);
+
+            if (!res) {
+              logger.info(`Successfully deleted the subscription for ${discordGuildId}`);
+            } else {
+              logger.error(`Failed to delete the subscription for ${discordGuildId}`);
+            }
             break;
           case 10003: // Unknown Channel
-            console.error(`Unknown Channel(s) (${discordVoiceChannelId} ; ${discordTextChannelId}), deleting subscription`);
+            logger.error(`Unknown Channel(s) (${discordVoiceChannelId} ; ${discordTextChannelId}), deleting subscription`);
+
             const resChannel = await deleteSaurollSubscription(discordGuildId);
-            console.error(`${resChannel ? "Successfully" : "Failed to"} delete the subscription for ${discordGuildId}`);
+
+            if (!resChannel) {
+              logger.info(`Successfully deleted the subscription for ${discordGuildId}`);
+            } else {
+              logger.error(`Failed to delete the subscription for ${discordGuildId}`);
+            }
             break;
           default:
-            console.error(e);
+            logger.error(`Error while posting roll: ${e}`);
             break;
         }
       }
@@ -137,9 +167,11 @@ export default class Sauroll {
   }
 
   async updateRoll(voiceChannelId: string) {
+    logger.debug(`Updating roll for ${voiceChannelId}`);
+
     const message = this.messages.get(voiceChannelId);
     if (!message) {
-      console.error("Message not found");
+      logger.error(`Message not found for ${voiceChannelId}`);
       return;
     }
 
@@ -164,6 +196,8 @@ export default class Sauroll {
   }
 
   async deleteMessages() {
+    logger.debug("Deleting messages.");
+
     for (const [_, message] of this.messages) {
       await message.delete();
     }

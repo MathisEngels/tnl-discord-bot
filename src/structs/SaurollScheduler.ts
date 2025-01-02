@@ -70,7 +70,7 @@ class SaurollScheduler {
   }
 
   private nightCycle() {
-    logger.info("Starting night cycle...");
+    logger.info("Starting night cycle.");
 
     const nextNightCycle = this._nextNightCycle();
     const elapsed = this.interval - nextNightCycle.diff(moment(), "seconds");
@@ -78,6 +78,7 @@ class SaurollScheduler {
     if (elapsed <= this.pingPeriod) {
       const timeToFirstRoll = this.pingPeriod - elapsed;
 
+      logger.info(`Sending pings`);
       this.ping();
 
       setTimeout(() => {
@@ -94,6 +95,7 @@ class SaurollScheduler {
   }
 
   private startRolls(numberOfRolls = 6, firstInterval = 0) {
+    logger.info(`Starting rolls.`);
     const rollInterval = this.rollDuration * 1000;
 
     for (let i = 0; i < numberOfRolls; i++) {
@@ -103,6 +105,10 @@ class SaurollScheduler {
         const timeSinceFirstRoll = elapsed - this.pingPeriod;
         const rollNumber = 1 + Math.floor(timeSinceFirstRoll / this.rollDuration);
         this.roll(rollNumber);
+        
+        if (rollNumber === this.chestCount) {
+          logger.info("All rolls finished.");
+        }
       }, firstInterval + i * rollInterval);
     }
   }

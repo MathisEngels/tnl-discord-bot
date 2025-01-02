@@ -3,6 +3,7 @@ import winston from "winston";
 
 const scopeColors = {
   MAIN: chalk.magenta,
+  Sauroll: chalk.yellow,
   SaurollScheduler: chalk.cyan,
   Command: chalk.green,
   API: chalk.blue
