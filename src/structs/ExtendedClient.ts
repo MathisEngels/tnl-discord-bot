@@ -4,6 +4,7 @@ import commands from "../commands";
 import events from "../events";
 import SaurollScheduler from "./SaurollScheduler";
 import Sauroll from "./Sauroll";
+import logger from "../logger";
 
 export default class ExtendedClient extends Client {
   public commands: Collection<string, BaseCommand>;
@@ -11,20 +12,29 @@ export default class ExtendedClient extends Client {
 
   constructor(options: ClientOptions) {
     super(options);
+    logger.debug("Client initializing...");
 
     this.commands = new Collection();
     this.registerCommands();
 
     this.registerEventHandler();
+
+    logger.debug("Client initialized.");
   }
 
   private async registerCommands() {
+    logger.debug(`Registering ${Object.keys(commands).length} commands.`);
+
     for (const command of Object.values(commands)) {
       this.commands.set(command.data.name, command);
     }
+
+    logger.debug("Commands registered.");
   }
 
   private registerEventHandler() {
+    logger.debug(`Registering ${Object.keys(events).length} event handlers.`);
+
     for (const eventHandler of Object.values(events)) {
       if (eventHandler.once) {
         this.once(eventHandler.name, eventHandler.execute);
@@ -32,9 +42,13 @@ export default class ExtendedClient extends Client {
         this.on(eventHandler.name, eventHandler.execute);
       }
     }
+
+    logger.debug("Event handlers registered.");
   }
 
   public setSaurollHandlers() {
+    logger.debug("Setting Sauroll handlers.");
+
     const ping = () => {
       this.sauroll.ping();
     };
@@ -53,5 +67,7 @@ export default class ExtendedClient extends Client {
     };
 
     new SaurollScheduler(ping, roll);
+
+    logger.debug("Sauroll handlers set.");
   }
 }

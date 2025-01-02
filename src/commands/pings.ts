@@ -3,6 +3,9 @@ import { readFile } from "fs/promises";
 import path from "path";
 import Sharp from "sharp";
 import { getPublicPath } from "../utils";
+import mainLogger from "../logger";
+
+const logger = mainLogger.child({ scope: "Command" });
 
 const bosses = [
   { name: "Adentus", value: "adentus" },
@@ -187,13 +190,17 @@ const data = new SlashCommandBuilder()
   .addStringOption((option) => option.setName("boss3").setDescription("The 3rd boss you want to get pings for.").setRequired(false).addChoices(bosses));
 
 async function execute(interaction: CommandInteraction) {
+  logger.info("Executing /pings command.", { interactionId: interaction.id });
+
   await interaction.reply("Processing...");
   const files = [];
   let maxPingsExceeded = false;
-  
+
   const boss1 = (interaction as ChatInputCommandInteraction).options.getString("boss1")!;
   const boss2 = (interaction as ChatInputCommandInteraction).options.getString("boss2");
   const boss3 = (interaction as ChatInputCommandInteraction).options.getString("boss3");
+
+  logger.debug(`Bosses selected: ${boss1}, ${boss2}, ${boss3}`, { interactionId: interaction.id });
 
   let currentPing = 1;
 
@@ -204,9 +211,7 @@ async function execute(interaction: CommandInteraction) {
   }
 
   const boss1Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss1}.png`));
-  const boss1Image = await Sharp(boss1Zone)
-    .composite(boss1Pings)
-    .toBuffer();
+  const boss1Image = await Sharp(boss1Zone).composite(boss1Pings).toBuffer();
   files.push({ attachment: boss1Image, name: `tnl-bot-${boss1}-1.png` });
 
   if (boss2) {
@@ -216,16 +221,14 @@ async function execute(interaction: CommandInteraction) {
       if (currentPing > maxPings) {
         maxPingsExceeded = true;
         break;
-      };
+      }
 
       boss2Pings.push({ input: await readFile(path.join(getPublicPath(), `/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
       currentPing++;
     }
 
     const boss2Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss2}.png`));
-    const boss2Image = await Sharp(boss2Zone)
-      .composite(boss2Pings)
-      .toBuffer();
+    const boss2Image = await Sharp(boss2Zone).composite(boss2Pings).toBuffer();
     files.push({ attachment: boss2Image, name: `tnl-bot-${boss2}-2.png` });
   }
 
@@ -236,21 +239,20 @@ async function execute(interaction: CommandInteraction) {
       if (currentPing > maxPings) {
         maxPingsExceeded = true;
         break;
-      };
+      }
       boss3Pings.push({ input: await readFile(path.join(getPublicPath(), `/guildPins/${currentPing}.png`)), top: ping.top, left: ping.left });
       currentPing++;
     }
 
     const boss3Zone = await readFile(path.join(getPublicPath(), `/bossZones/${boss3}.png`));
-    const boss3Image = await Sharp(boss3Zone)
-      .composite(boss3Pings)
-      .toBuffer();
+    const boss3Image = await Sharp(boss3Zone).composite(boss3Pings).toBuffer();
     files.push({ attachment: boss3Image, name: `tnl-bot-${boss3}-3.png` });
   }
 
   const message = maxPingsExceeded ? "Max pings exceeded. Only the first 20 pings are shown." : "Here's the pings!";
 
   await interaction.editReply({ content: message, files: files });
+  logger.info("Pings sent", { interactionId: interaction.id });
 }
 
 export default { data, execute };

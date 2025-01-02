@@ -1,6 +1,7 @@
 import { REST, Routes } from "discord.js";
 import commands from "./commands";
 import { config } from "./config";
+import logger from "./logger";
 
 const rest = new REST().setToken(config.DISCORD_TOKEN);
 
@@ -8,12 +9,12 @@ const commandsData = Object.values(commands).map((command) => command.data.toJSO
 
 (async () => {
   try {
-    console.log(`DEV - Started refreshing ${commandsData.length} application (/) commands.`);
+    logger.info(`DEV - Started refreshing ${commandsData.length} application (/) commands.`);
 
     const data = await rest.put(Routes.applicationGuildCommands(config.DISCORD_CLIENT_ID, process.env.GUILD_ID!), { body: commandsData });
 
-    console.log(`DEV - Successfully reloaded ${(data as string[]).length} application (/) commands.`);
+    logger.info(`DEV - Successfully reloaded ${(data as string[]).length} application (/) commands.`);
   } catch (error) {
-    console.error(error);
+    logger.error(`DEV - Failed to reload application (/) commands:`, error);
   }
 })();

@@ -4,6 +4,7 @@ import ExtendedClient from "./ExtendedClient";
 import { SaurollButtons, SaurollRollEmbed, SaurollRollFields } from "../components/sauroll/roll";
 import { SaurollPlayer } from "../types/sauroll";
 import { deleteSaurollSubscription, getSaurollSubscribers } from "../api/sauroll";
+import logger from "../logger";
 
 export default class Sauroll {
   client: ExtendedClient;
@@ -16,6 +17,7 @@ export default class Sauroll {
 
   constructor(client: ExtendedClient) {
     this.client = client;
+    logger.debug("Sauroll initialized.");
   }
 
   getPlayers(channel: VoiceBasedChannel) {

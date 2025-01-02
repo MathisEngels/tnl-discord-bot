@@ -1,4 +1,7 @@
 import moment from "moment-timezone";
+import mainLogger from "../logger";
+
+const logger = mainLogger.child({ scope: "SaurollScheduler" });
 
 class SaurollScheduler {
   private ping: () => void;
@@ -12,18 +15,27 @@ class SaurollScheduler {
   private readonly nightCycleDuration = this.pingPeriod + this.rollPeriod;
 
   constructor(ping: () => void, roll: (chestNumber: number) => void) {
+    logger.debug("Initializing SaurollScheduler...");
+
     this.ping = ping;
     this.roll = roll;
 
     this.init();
+
+    logger.debug("SaurollScheduler initialized.");
   }
 
   private init() {
     const nextNightCycle = this._nextNightCycle();
     const prevNightCycle = nextNightCycle.clone().subtract(this.interval, "seconds");
 
+    logger.info(`Previous night cycle: ${prevNightCycle.format("YYYY-MM-DD HH:mm:ss")}`);
+    logger.info(`Next night cycle: ${nextNightCycle.format("YYYY-MM-DD HH:mm:ss")}`);
+
     const timeSinceLastNightCycle = moment().diff(prevNightCycle, "seconds");
     if (timeSinceLastNightCycle < this.nightCycleDuration) {
+      logger.info("Night cycle already started. Starting rolls...");
+
       this.nightCycle();
     }
 
@@ -32,6 +44,8 @@ class SaurollScheduler {
   }
 
   private schedule(timeout: number) {
+    logger.debug(`Scheduling next night cycle in ${timeout}ms`);
+    
     setTimeout(() => {
       this.nightCycle();
 
@@ -56,6 +70,8 @@ class SaurollScheduler {
   }
 
   private nightCycle() {
+    logger.info("Starting night cycle...");
+
     const nextNightCycle = this._nextNightCycle();
     const elapsed = this.interval - nextNightCycle.diff(moment(), "seconds");
 

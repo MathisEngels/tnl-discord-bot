@@ -3,29 +3,34 @@ import { TEventListener } from "../types/events";
 import ExtendedClient from "../structs/ExtendedClient";
 import inviteAccept from "../actions/inviteAccept";
 import inviteRefuse from "../actions/inviteRefuse";
+import logger from "../logger";
 
 const listener: TEventListener<Events.InteractionCreate> = {
   name: Events.InteractionCreate,
   once: false,
   execute: async (interaction: Interaction) => {
+    logger.debug(`Event: InteractionCreate (${interaction.id}).`);
+
     if (interaction.isChatInputCommand() || interaction.isAutocomplete()) {
+      logger.debug(`Received command: ${interaction.commandName} from ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} [${interaction.guild?.id}].`);
+
       const command = (interaction.client as ExtendedClient).commands.get(interaction.commandName);
 
       if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
+        logger.error(`No command matching ${interaction.commandName} was found.`);
         return;
       }
 
       if (interaction.isAutocomplete()) {
         if (!command.autocomplete) {
-          console.error(`No autocomplete function found for ${interaction.commandName}`);
+          logger.error(`No autocomplete function found for ${interaction.commandName}`);
           return;
         }
 
         try {
           await command.autocomplete(interaction);
         } catch (error) {
-          console.error(error);
+          logger.error(`Error while executing autocomplete for ${interaction.commandName}: `, error);
         }
       }
 
@@ -33,7 +38,7 @@ const listener: TEventListener<Events.InteractionCreate> = {
         try {
           await command.execute(interaction);
         } catch (error) {
-          console.error(error);
+          logger.error(`Error while executing command ${interaction.commandName}: `, error);
 
           if (interaction.replied || interaction.deferred) {
             await interaction.followUp({ content: "There was an error while executing this command!", ephemeral: true });
@@ -43,6 +48,8 @@ const listener: TEventListener<Events.InteractionCreate> = {
         }
       }
     } else if (interaction.isButton()) {
+      logger.debug(`Received button interaction: ${interaction.customId} from ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} [${interaction.guild?.id}].`);
+
       if (interaction.customId.startsWith("guildInvite")) {
         const [_, value, guildId] = interaction.customId.split("-");
 
@@ -68,8 +75,6 @@ const listener: TEventListener<Events.InteractionCreate> = {
           (interaction.client as ExtendedClient).sauroll.optOut(voiceChannelId, interaction.user.id);
 
           await interaction.editReply({ content: "You have opted out the rolls." });
-        } else {
-          console.error(`No function matching ${func} was found.`);
         }
       }
     }
