@@ -221,9 +221,10 @@ async function updateSubscription(interaction: ButtonInteraction) {
       discordTextChannelId: textChannelId,
       discordRoleId: roleId,
     });
-    if (!res) {
+
+    if (res && res.error) {
       logger.warn("Failed to update the Sauroll subscription.", { interactionId: i.id });
-      await i.editReply({ content: "", embeds: [getSubscriptionActionFailEmbed("update", subscription.discordVoiceChannelId)], components: [] });
+      await i.editReply({ content: "", embeds: [getSubscriptionActionFailEmbed("update", subscription.discordVoiceChannelId, res.error)], components: [] });
       return;
     }
 
@@ -267,10 +268,11 @@ async function cancelSubscription(interaction: ButtonInteraction) {
     const voiceChannelId = subscriptions.find((sub) => sub.discordVoiceChannelId === i.values[0])!.discordVoiceChannelId;
 
     const res = await deleteSaurollSubscription(voiceChannelId);
-    if (!res) {
+
+    if (res && res.error) {
       logger.warn("Failed to cancel the Sauroll subscription.", { interactionId: i.id });
 
-      await i.editReply({ content: "", embeds: [getSubscriptionActionFailEmbed("cancel", voiceChannelId)], components: [] });
+      await i.editReply({ content: "", embeds: [getSubscriptionActionFailEmbed("cancel", voiceChannelId, res.error)], components: [] });
       return;
     }
 

@@ -51,6 +51,8 @@ export type SaurollSubscriber = {
   discordRoleId?: string;
 };
 
+export type Response<T> = Promise<T | { error: string }>;
+
 export type GetSaurollSubscriptionByGuildIdResponse = SaurollSubscriber[];
 export type GetSaurollSubscribersResponse = SaurollSubscriber[];
 export type CreateSaurollSubscriptionBody = Omit<SaurollSubscriber, "id">;

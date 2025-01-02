@@ -13,8 +13,13 @@ const cancelSubscription = new ButtonBuilder().setCustomId("cancelSubscription")
 
 export const subscriptionManagerRow = new ActionRowBuilder<ButtonBuilder>().addComponents(addSubscription, updateSubscription, cancelSubscription);
 
-export function getSubscriptionActionFailEmbed(verb: string, voiceChannelId: string) {
-  return new EmbedBuilder().setTitle("Sauroll").setDescription(`Failed to ${verb} the Sauroll subscription in <#${voiceChannelId}>. Please try again.`);
+export function getSubscriptionActionFailEmbed(verb: string, voiceChannelId: string, reason?: string) {
+  return new EmbedBuilder().setTitle("Sauroll").setDescription(
+    dedent`
+    Failed to ${verb} the Sauroll subscription in <#${voiceChannelId}>. 
+    Reason: ${reason}.
+    Please try again.`
+  );
 }
 
 export function getSubscriptionActionSuccessEmbed(verb: string, voiceChannelId: string) {
@@ -25,7 +30,12 @@ const voiceChannelSelect = new ChannelSelectMenuBuilder().setCustomId("channel")
 const createChannel = new ButtonBuilder().setCustomId("createChannel").setLabel("Create a channel").setStyle(ButtonStyle.Primary);
 export const voiceChannelRows = [new ActionRowBuilder<ChannelSelectMenuBuilder>().addComponents(voiceChannelSelect), new ActionRowBuilder<ButtonBuilder>().addComponents(createChannel)];
 
-const textChannelSelect = new ChannelSelectMenuBuilder().setCustomId("channel").setPlaceholder("Select a channel").setChannelTypes([ChannelType.GuildText, ChannelType.GuildVoice]).setMinValues(0).setMaxValues(1);
+const textChannelSelect = new ChannelSelectMenuBuilder()
+  .setCustomId("channel")
+  .setPlaceholder("Select a channel")
+  .setChannelTypes([ChannelType.GuildText, ChannelType.GuildVoice])
+  .setMinValues(0)
+  .setMaxValues(1);
 const sameAsVoiceChannel = new ButtonBuilder().setCustomId("sameAsVoiceChannel").setLabel("Same as voice channel").setStyle(ButtonStyle.Primary);
 export const textChannelRows = [
   new ActionRowBuilder<ChannelSelectMenuBuilder>().addComponents(textChannelSelect),

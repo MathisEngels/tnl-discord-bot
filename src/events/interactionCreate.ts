@@ -1,4 +1,4 @@
-import { Events, Interaction } from "discord.js";
+import { DiscordjsError, DiscordjsErrorCodes, Events, Interaction, InteractionCollector } from "discord.js";
 import { TEventListener } from "../types/events";
 import ExtendedClient from "../structs/ExtendedClient";
 import inviteAccept from "../actions/inviteAccept";
@@ -40,10 +40,12 @@ const listener: TEventListener<Events.InteractionCreate> = {
         } catch (error) {
           logger.error(`Error while executing command ${interaction.commandName}: `, error);
 
-          if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: "There was an error while executing this command!", ephemeral: true });
-          } else {
-            await interaction.reply({ content: "There was an error while executing this command!", ephemeral: true });
+          if (error instanceof DiscordjsError && error.code === DiscordjsErrorCodes.InteractionCollectorError && error.message.includes("time")) {
+            if (interaction.replied || interaction.deferred) {
+              await interaction.editReply({ content: "You took too long to interact with the command", embeds: [], components: [] });
+            } else {
+              await interaction.reply({ content: "You took too long to interact with the command", ephemeral: true });
+            }
           }
         }
       }

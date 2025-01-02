@@ -1,5 +1,5 @@
 import mainLogger from "../logger";
-import { CreateSaurollSubscriptionBody, GetSaurollSubscribersResponse, GetSaurollSubscriptionByGuildIdResponse, UpdateSaurollSubscriptionBody } from "../types/API";
+import { CreateSaurollSubscriptionBody, GetSaurollSubscribersResponse, GetSaurollSubscriptionByGuildIdResponse, UpdateSaurollSubscriptionBody, Response } from "../types/API";
 
 const logger = mainLogger.child({ scope: "API" });
 
@@ -56,7 +56,7 @@ export async function createSaurollSubscription(data: CreateSaurollSubscriptionB
   }
 }
 
-export async function updateSaurollSubscription(discordVoiceChannelId: string, data: UpdateSaurollSubscriptionBody): Promise<boolean> {
+export async function updateSaurollSubscription(discordVoiceChannelId: string, body: UpdateSaurollSubscriptionBody): Response<null> {
   try {
     logger.debug(`Updating sauroll subscription: ${discordVoiceChannelId}`);
 
@@ -65,30 +65,46 @@ export async function updateSaurollSubscription(discordVoiceChannelId: string, d
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     });
 
+    const data = await response.json();
+
+    if (data.code === 204) {
+      logger.warn(`Sauroll subscription not found: ${discordVoiceChannelId}`);
+
+      return { error: data.error };
+    }
+
     logger.debug(`Successfully updated sauroll subscription: ${discordVoiceChannelId}`);
-    return response.ok;
+    return null;
   } catch (error) {
     logger.error(`Failed to update sauroll subscription: ${discordVoiceChannelId}. ${error}`);
 
-    return false;
+    return { error: "An unknown error occured" };
   }
 }
 
-export async function deleteSaurollSubscription(discordVoiceChannelId: string): Promise<boolean> {
+export async function deleteSaurollSubscription(discordVoiceChannelId: string): Response<null> {
   try {
     logger.debug(`Deleting sauroll subscription: ${discordVoiceChannelId}`);
+
     const response = await fetch(`${process.env.API_URL}/sauroll/${discordVoiceChannelId}`, {
       method: "DELETE",
     });
+    const data = await response.json();
+
+    if (data.code === 204) {
+      logger.warn(`Sauroll subscription not found: ${discordVoiceChannelId}`);
+
+      return { error: data.error };
+    }
 
     logger.debug(`Successfully deleted sauroll subscription: ${discordVoiceChannelId}`);
-    return response.ok;
+    return null;
   } catch (error) {
     logger.error(`Failed to delete sauroll subscription: ${discordVoiceChannelId}. ${error}`);
 
-    return false;
+    return { error: "An unknown error occured" };
   }
 }
