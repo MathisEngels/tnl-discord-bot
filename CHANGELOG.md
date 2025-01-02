@@ -1,3 +1,16 @@
+# [1.1.0-beta.12](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.11...v1.1.0-beta.12) (2025-01-02)
+
+
+### Bug Fixes
+
+* add missing log entries ([96e5354](https://github.com/MathisEngels/tnl-discord-bot/commit/96e535434f4b7541d9d68b1c20903b1bb9265a34))
+
+
+### Features
+
+* add some error handling ([6e8d518](https://github.com/MathisEngels/tnl-discord-bot/commit/6e8d518e1df90e50381269d97e165b9e4149f5bd))
+* use pagination for /setup all ([8ae8e0d](https://github.com/MathisEngels/tnl-discord-bot/commit/8ae8e0d38fcec2ef64caadd1592a7121680d40c2))
+
 # [1.1.0-beta.11](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.10...v1.1.0-beta.11) (2025-01-02)
 
 
