@@ -1,9 +1,11 @@
-import { CommandInteraction, ComponentType, Role, User } from "discord.js";
+import { CommandInteraction, ComponentType, Role, StringSelectMenuInteraction, User } from "discord.js";
 import { getAllRegions, getServersByRegionId } from "../../api/region";
 import { createGuild, getGuildByDiscordId, updateGuild } from "../../api/guild";
 import { confirmRow, getRegionSelectRow, getServerSelectRow, guildAdvisorRow, guildLeaderRow, guildSetupModal, membersRoleRow } from "../../components/setup";
 import { Region, Server } from "../../types/API";
 import mainLogger from "../../logger";
+import stringSelectPagination from "../../functions/stringSelectPagination";
+import { StringSelectPage } from "../../types/pagination";
 
 const logger = mainLogger.child({ scope: "Command" });
 
@@ -36,114 +38,125 @@ export default async function setupAll(interaction: CommandInteraction) {
     servers.set(regionName, serverList);
   }
 
-  let serverSelectRows;
-  if (servers.get(regionName)!.length > 25) {
-    serverSelectRows = [getServerSelectRow(servers.get(regionName)!.slice(0, 25), 1), getServerSelectRow(servers.get(regionName)!.slice(25), 2)];
-  } else {
-    serverSelectRows = [getServerSelectRow(servers.get(regionName)!)];
-  }
+  const cb = async (i: StringSelectMenuInteraction) => {
+    const serverName = servers.get(regionName)!.find((server) => server.id === parseInt(i.values[0]))!.name;
+    logger.debug(`Server selected: ${serverName}`, { interactionId: interaction.id });
 
-  const serverRes = await regionConfirmation.editReply({
-    content: generateSummaryText("Please select the **server** of your guild!", regionName),
-    components: serverSelectRows,
-  });
-  const serverConfirmation = await serverRes.awaitMessageComponent({ componentType: ComponentType.StringSelect, time: 60000 });
+    // Guild's name modal
+    await i.showModal(guildSetupModal);
+    await i.editReply({ content: generateSummaryText("Please enter the **name** of your guild!", regionName, serverName), components: [] });
 
-  const serverName = servers.get(regionName)!.find((server) => server.id === parseInt(serverConfirmation.values[0]))!.name;
-  logger.debug(`Server selected: ${serverName}`, { interactionId: interaction.id });
+    const modalRes = await i.awaitModalSubmit({ time: 60000 });
+    await modalRes.deferUpdate();
 
-  // Guild's name modal
-  await serverConfirmation.showModal(guildSetupModal);
-  await serverConfirmation.editReply({ content: generateSummaryText("Please enter the **name** of your guild!", regionName, serverName), components: [] });
+    const guildName = modalRes.fields.getField("guildNameInput").value;
+    logger.debug(`Guild name: ${guildName}`, { interactionId: interaction.id });
 
-  const modalRes = await serverConfirmation.awaitModalSubmit({ time: 60000 });
-  await modalRes.deferUpdate();
-
-  const guildName = modalRes.fields.getField("guildNameInput").value;
-  logger.debug(`Guild name: ${guildName}`, { interactionId: interaction.id });
-
-  // Guild's leader
-  const guildLeaderRes = await serverConfirmation.editReply({
-    content: generateSummaryText("Please select the **leader** of your guild!", regionName, serverName, guildName),
-    components: [guildLeaderRow],
-  });
-
-  const guildLeaderConfirmation = await guildLeaderRes.awaitMessageComponent({ componentType: ComponentType.UserSelect, time: 60000 });
-  await guildLeaderConfirmation.deferUpdate();
-
-  const guildLeader = (await guild.members.fetch(guildLeaderConfirmation.values[0])).user;
-  logger.debug(`Guild leader: ${guildLeader.tag}`, { interactionId: interaction.id });
-
-  // Guild's advisor
-  const guildAdvisorsRes = await guildLeaderConfirmation.editReply({
-    content: generateSummaryText("Please select the **advisor(s)** of your guild! *(Up to 3)*", regionName, serverName, guildName, guildLeader),
-    components: [guildAdvisorRow],
-  });
-  const guildAdvisorsConfirmation = await guildAdvisorsRes.awaitMessageComponent({ componentType: ComponentType.UserSelect, time: 60000 });
-  await guildAdvisorsConfirmation.deferUpdate();
-
-  const guildAdvisors = await Promise.all(guildAdvisorsConfirmation.values.map(async (advisor) => (await guild.members.fetch(advisor)).user));
-  logger.debug(`Guild advisors: ${guildAdvisors.map((advisor) => advisor.tag).join(", ")}`, { interactionId: interaction.id });
-
-  // Members's role
-  const membersRoleRes = await guildAdvisorsConfirmation.editReply({
-    content: generateSummaryText("Please select the **members role** of your guild!", regionName, serverName, guildName, guildLeader, guildAdvisors),
-    components: [membersRoleRow],
-  });
-  const membersRoleConfirmation = await membersRoleRes.awaitMessageComponent({ componentType: ComponentType.RoleSelect, time: 60000 });
-  await membersRoleConfirmation.deferUpdate();
-
-  const membersRole = await guild.roles.fetch(membersRoleConfirmation.values[0]);
-  if (!membersRole) {
-    logger.debug(`Members role doesn't exist in this server.`, { interactionId: interaction.id });
-    return await membersRoleConfirmation.editReply("The role you selected doesn't exist in this server. Please restart the setup process with /setup");
-  }
-  logger.debug(`Members role: ${membersRole.name}`, { interactionId: interaction.id });
-
-  // Confirm
-  const confirmRes = await membersRoleConfirmation.editReply({
-    content: generateSummaryText("Please confirm your guild setup!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole),
-    components: [confirmRow],
-  });
-  const confirm = await confirmRes.awaitMessageComponent({ componentType: ComponentType.Button, time: 60000 });
-  await confirm.deferUpdate();
-
-  if (confirm.customId !== "confirm") {
-    logger.debug("Guild setup cancelled.", { interactionId: interaction.id });
-
-    return confirm.editReply({
-      content: generateSummaryText(":x: Guild setup cancelled\nIf you want to restart the setup procedure, use /setup", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole),
-      components: [],
+    // Guild's leader
+    const guildLeaderRes = await i.editReply({
+      content: generateSummaryText("Please select the **leader** of your guild!", regionName, serverName, guildName),
+      components: [guildLeaderRow],
     });
-  }
 
-  // API Call
-  const body = {
-    name: guildName,
-    serverId: parseInt(serverConfirmation.values[0]),
-    discordGuildId: guild.id,
-    discordLeaderId: guildLeader.id,
-    discordAdvisorIds: guildAdvisors.map((advisor) => advisor.id),
-    discordMembersRoleId: membersRole.id,
+    const guildLeaderConfirmation = await guildLeaderRes.awaitMessageComponent({ componentType: ComponentType.UserSelect, time: 60000 });
+    await guildLeaderConfirmation.deferUpdate();
+
+    const guildLeader = (await guild.members.fetch(guildLeaderConfirmation.values[0])).user;
+    logger.debug(`Guild leader: ${guildLeader.tag}`, { interactionId: interaction.id });
+
+    // Guild's advisor
+    const guildAdvisorsRes = await guildLeaderConfirmation.editReply({
+      content: generateSummaryText("Please select the **advisor(s)** of your guild! *(Up to 3)*", regionName, serverName, guildName, guildLeader),
+      components: [guildAdvisorRow],
+    });
+    const guildAdvisorsConfirmation = await guildAdvisorsRes.awaitMessageComponent({ componentType: ComponentType.UserSelect, time: 60000 });
+    await guildAdvisorsConfirmation.deferUpdate();
+
+    const guildAdvisors = await Promise.all(guildAdvisorsConfirmation.values.map(async (advisor) => (await guild.members.fetch(advisor)).user));
+    logger.debug(`Guild advisors: ${guildAdvisors.map((advisor) => advisor.tag).join(", ")}`, { interactionId: interaction.id });
+
+    // Members's role
+    const membersRoleRes = await guildAdvisorsConfirmation.editReply({
+      content: generateSummaryText("Please select the **members role** of your guild!", regionName, serverName, guildName, guildLeader, guildAdvisors),
+      components: [membersRoleRow],
+    });
+    const membersRoleConfirmation = await membersRoleRes.awaitMessageComponent({ componentType: ComponentType.RoleSelect, time: 60000 });
+    await membersRoleConfirmation.deferUpdate();
+
+    const membersRole = await guild.roles.fetch(membersRoleConfirmation.values[0]);
+    if (!membersRole) {
+      logger.debug(`Members role doesn't exist in this server.`, { interactionId: interaction.id });
+
+      await membersRoleConfirmation.editReply("The role you selected doesn't exist in this server. Please restart the setup process with /setup");
+
+      return;
+    }
+    logger.debug(`Members role: ${membersRole.name}`, { interactionId: interaction.id });
+
+    // Confirm
+    const confirmRes = await membersRoleConfirmation.editReply({
+      content: generateSummaryText("Please confirm your guild setup!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole),
+      components: [confirmRow],
+    });
+    const confirm = await confirmRes.awaitMessageComponent({ componentType: ComponentType.Button, time: 60000 });
+    await confirm.deferUpdate();
+
+    if (confirm.customId !== "confirm") {
+      logger.debug("Guild setup cancelled.", { interactionId: interaction.id });
+
+      await confirm.editReply({
+        content: generateSummaryText(":x: Guild setup cancelled\nIf you want to restart the setup procedure, use /setup", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole),
+        components: [],
+      });
+
+      return;
+    }
+
+    // API Call
+    const body = {
+      name: guildName,
+      serverId: parseInt(i.values[0]),
+      discordGuildId: guild.id,
+      discordLeaderId: guildLeader.id,
+      discordAdvisorIds: guildAdvisors.map((advisor) => advisor.id),
+      discordMembersRoleId: membersRole.id,
+    };
+
+    let apiCall;
+    const guildExists = await getGuildByDiscordId(guild.id);
+    if (guildExists) {
+      apiCall = updateGuild(guildExists.id, body);
+    } else {
+      apiCall = createGuild(body);
+    }
+
+    const success = await apiCall;
+    if (!success) {
+      logger.warn("Failed to setup the guild.", { interactionId: interaction.id });
+
+      await confirm.editReply({ content: "An error occurred while saving your guild setup. Please try again later." });
+
+      return;
+    }
+
+    await confirm.editReply({ content: generateSummaryText(":white_check_mark: Guild setup saved!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole), components: [] });
+
+    logger.info("Guild setup saved successfully.", { interactionId: interaction.id });
   };
 
-  let apiCall;
-  const guildExists = await getGuildByDiscordId(guild.id);
-  if (guildExists) {
-    apiCall = updateGuild(guildExists.id, body);
-  } else {
-    apiCall = createGuild(body);
-  }
+  const serversPages = servers.get(regionName)!.reduce((acc, server, i) => {
+    const pageIndex = Math.floor(i / 25);
+    if (!acc[pageIndex]) acc[pageIndex] = [];
 
-  const success = await apiCall;
-  if (!success) {
-    logger.warn("Failed to setup the guild.", { interactionId: interaction.id });
-    return confirm.editReply({ content: "An error occurred while saving your guild setup. Please try again later." });
-  }
+    acc[pageIndex].push({
+      label: `${server.name}`,
+      value: server.id.toString(),
+    });
 
-  await confirm.editReply({ content: generateSummaryText(":white_check_mark: Guild setup saved!", regionName, serverName, guildName, guildLeader, guildAdvisors, membersRole), components: [] });
+    return acc;
+  }, [] as StringSelectPage[]);
 
-  logger.info("Guild setup saved successfully.", { interactionId: interaction.id });
+  await stringSelectPagination(regionConfirmation, serversPages, cb, { placeholder: "Select a server", defer: false });
 }
 
 function generateSummaryText(endText: string, regionName?: string, serverName?: string, guildName?: string, guildLeader?: User, guildAdvisor?: User[], membersRole?: Role | null) {

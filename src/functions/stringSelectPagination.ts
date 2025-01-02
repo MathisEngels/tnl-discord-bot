@@ -5,6 +5,7 @@ import logger from "../logger";
 type StringSelectPaginationOptions = {
   placeholder?: string;
   time?: number;
+  defer?: boolean;
 };
 
 export default async function stringSelectPagination(
@@ -15,6 +16,7 @@ export default async function stringSelectPagination(
 ) {
   const time = options.time || 60000;
   const placeholder = options.placeholder || "Select an option";
+  const defer = options.defer ?? true;
 
   if (!interaction || !pages || pages.length === 0) {
     logger.error("Invalid interaction or pages provided.");
@@ -29,7 +31,13 @@ export default async function stringSelectPagination(
     const select = new StringSelectMenuBuilder()
       .setCustomId("stringSelect")
       .setPlaceholder(placeholder)
-      .addOptions(pages[0].map((page) => new StringSelectMenuOptionBuilder().setLabel(page.label).setDescription(page.description).setValue(page.value)));
+      .addOptions(
+        pages[0].map((page) => {
+          const option = new StringSelectMenuOptionBuilder().setLabel(page.label).setValue(page.value);
+          if (page.description) option.setDescription(page.description);
+          return option;
+        })
+      );
     const stringSelect = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
 
     const stringSelectMsg = await interaction.editReply({ content: "", embeds: [], components: [stringSelect] });
@@ -56,7 +64,13 @@ export default async function stringSelectPagination(
   const select = new StringSelectMenuBuilder()
     .setCustomId("stringSelect")
     .setPlaceholder(placeholder)
-    .addOptions(pages[currentPage].map((page) => new StringSelectMenuOptionBuilder().setLabel(page.label).setDescription(page.description).setValue(page.value)));
+    .addOptions(
+      pages[currentPage].map((page) => {
+        const option = new StringSelectMenuOptionBuilder().setLabel(page.label).setValue(page.value);
+        if (page.description) option.setDescription(page.description);
+        return option;
+      })
+    );
   const stringSelect = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(select);
 
   const msg = await interaction.editReply({ content: "", embeds: [], components: [stringSelect, buttons] });
@@ -75,7 +89,7 @@ export default async function stringSelectPagination(
     } else if (i.customId === "pageLast") {
       currentPage = pages.length - 1;
     } else if (i.customId === "stringSelect") {
-      await i.deferUpdate();
+      if (defer) await i.deferUpdate();
       return collector.stop();
     }
 
@@ -101,7 +115,13 @@ export default async function stringSelectPagination(
     const newSelect = new StringSelectMenuBuilder()
       .setCustomId("stringSelect")
       .setPlaceholder(placeholder)
-      .addOptions(pages[currentPage].map((page) => new StringSelectMenuOptionBuilder().setLabel(page.label).setDescription(page.description).setValue(page.value)));
+      .addOptions(
+        pages[currentPage].map((page) => {
+          const option = new StringSelectMenuOptionBuilder().setLabel(page.label).setValue(page.value);
+          if (page.description) option.setDescription(page.description);
+          return option;
+        })
+      );
     const newStringSelect = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(newSelect);
 
     await i.deferUpdate();
