@@ -1,3 +1,10 @@
+# [1.1.0-beta.11](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.10...v1.1.0-beta.11) (2025-01-02)
+
+
+### Features
+
+* add logging ([c88eac2](https://github.com/MathisEngels/tnl-discord-bot/commit/c88eac2bc039ee841e042662b64e1d9cd01f738f))
+
 # [1.1.0-beta.10](https://github.com/MathisEngels/tnl-discord-bot/compare/v1.1.0-beta.9...v1.1.0-beta.10) (2025-01-01)
 
 
